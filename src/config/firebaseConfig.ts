@@ -1,37 +1,21 @@
 // src/config/firebaseConfig.ts
-/**
- * Firebase Admin SDK configuration (definitivo)
- * --------------------------------------------
- * Usa la variable de entorno FIREBASE_SERVICE_ACCOUNT
- * que contiene todo el JSON del service account.
- *
- * Esto permite inicializar Firebase Admin para Firestore
- * y Auth sin exponer credenciales en el código.
- */
-
 import admin from "firebase-admin";
-import dotenv from "dotenv";
-dotenv.config();
 
-const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
+// Parsear el JSON de la variable de entorno
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}");
 
-if (!serviceAccountString) {
-  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT missing in environment variables");
+// Reemplazar los caracteres "\n" por saltos de línea reales
+if (serviceAccount.private_key) {
+  serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
 }
 
-let serviceAccount;
-try {
-  serviceAccount = JSON.parse(serviceAccountString);
-} catch (e) {
-  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT is not valid JSON");
+// Inicializar Firebase Admin
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    projectId: serviceAccount.project_id,
+  });
 }
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
+// Exportar Firestore
 export const db = admin.firestore();
-export const auth = admin.auth();
-
-console.log("🔥 Firebase admin initialized");
-
