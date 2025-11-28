@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: servidor-chat
+    env: node
+    region: oregon
+    plan: free
+
+    buildCommand: "npm install"
+    startCommand: "npm run start"
+
+    rootDir: .
+    
+    envVars:
+      - key: PORT
+        value: 5001
+
+      - key: FIREBASE_PROJECT_ID
+        value: iglu-2025
+
+      - key: FIREBASE_CLIENT_EMAIL
+        value: firebase-adminsdk-fbsvc@iglu-2025.iam.gserviceaccount.com
+
+      - key: FIREBASE_PRIVATE_KEY
+        # IMPORTANTE: Respeta las comillas y los \n
+        value: |
+          -----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCFJGUiIm0ujUVq\nd8SM9YtdPORZist7K4YrRvSjdVs7dQNd0Mo59ogDF3b+Ct1uDu8AMfrU1sP/ldqI\natmKXHDnu9a/vouHjjpWAXfwgzoqR6YcO8hk75lEkRIIgmN9tPlvZunRUgGTg35q\n6nFO9JyXa2ka+uZcTVPlQ97y1rFbmpIJBd/3rMbyEkZzyukQnDD2V52G1uZfSd+2\np9jg7DZaZW/EvGz3k+e//4VS92PMYp91HBS5e1RunkhzNoARlNSMYH2xv1SwsJa9\nclA9LMkpgSSwy5yQeBgrXQ1XEkte6Zhxe8xciZgH7RuIX0jWw0UDVCEI7zWLJLWc\nzCt5ykufAgMBAAECggEAA3QiO3RxKJf5iP16V72208BUnA4BoTxLyquYhPTyXOR4\nJeLYnBBNDud46rYVcFlq0bJ6MzMu+l5EwO0kn3YuZ5RzyZ2DuQxzbu+y0MZWp+ob\n4PecByI/84tf0GCxe/1Jyx38SrW53L24dcWHEuk9dqAOpeiEOTi4SGYuTlZLW3jp\nZNFqqr2WaERWPHhZQYLvjZ94C8CRu46RWVG6gD2ozcoE5CmY6UVkeNzEHmwlE4Qu\nXxI2pvMxmeiuzpyuEqQIYydaUfk5LjqF9DvD9Fdofpk3o4bWkxpDJp/GRyCjH5Px\nulT9fSK05cvL5JrqBOD6iwE5N2hfmcJ0m6Mqv3RjIQKBgQC54MOYxo5lti8DBc3V\n869Ps1STYcJXlBe4RZXVW07kYArdoyGGQmNgQxVi/E6YfF6qx4eXsmb/nipNRWe5\nVfhKjT8LODjkJ/iaREyawwQWsvKKMG3pB17zqZRkXjlEUEwj+rUs7DeTFQIdqkaj\nudnfccIUbZIR0G8VKkxOPCAhZQKBgQC3XqZYouzQY9UIRwx51dGdHJvJNUBOUq4a\nNPlYKDnGUKrh6mqNIKnxKZp5zUh+Qy073khVGN89wkFGlEjzaMWlOZkX7Ap7dXzt\nmgSNGnsX9WVOfi+bJi+xUvZNlGsPdSfMqsVx8THJ17UgvlnoAVq55omVPvbjjwfK\n5i9kYCEKswKBgA8t88s+K9LSlfRBPRYD2IVBt95xVVWhmm5KAHp0AnVUAo8nC03T\njhoGYHC8+g4p2fFIaiJRR2gImpvE1zujcatk7YkVBlBbk0nF2hupYWQZKQVv/wnQ\nuEhdyOiJaVPS2uT1TGZmxAMW7B1QEoS8YLaGq7rPV+ZshyXLVn/tGRKhAoGBALUJ\n/bIFKUmVRv6lJuwi7pDvbd95c8PgXYQCSSuAi4oAmrXxesFbPm2bZahbxPbj3AT/\nsOpTZBTVdRz5ygyHpJs8AqpboP3DQVRUe6nUOzOsVBjq/JVxXiT0g7iUkB7yzBiF\ngeq89ysQjQOG67zjmW9w7OUtBRQmYssv+Bphzj2BAoGAWwucvTAVVGHEep6Y2fEX\nSDoMAgiCjoQsUTOzGAaYi0yZgD4SPuNGR+H1LhQtXJa5mnKm7DHdHFoNt93LzcMk\nEgVn6OS2+/Rt72e/RvTFZPNENOUFOqKje/bjrMx6c8QEQGKv/I0VbL/rQXy+/R9M\npv/XSCEZDVHAe8/etkwCTQc=\n-----END PRIVATE KEY-----\
