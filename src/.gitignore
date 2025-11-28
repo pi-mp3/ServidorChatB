@@ -1,0 +1,68 @@
+# -------------------------
+# Node / TypeScript
+# -------------------------
+node_modules/
+dist/
+build/
+out/
+.tmp/
+temp/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -------------------------
+# TypeScript build files
+# -------------------------
+*.tsbuildinfo
+
+# -------------------------
+# Environment variables
+# -------------------------
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# -------------------------
+# Firebase Admin credentials
+# -------------------------
+serviceAccountKey.json
+firebase-adminsdk-*.json
+*.pem
+*.p12
+
+# -------------------------
+# Logs
+# -------------------------
+logs/
+*.log
+*.log.*
+debug.log
+
+# -------------------------
+# OS files
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Editor / IDE
+# -------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -------------------------
+# Vite / React (si tienes frontend)
+# -------------------------
+dist/
+vite.config.ts.timestamp
+
+# -------------------------
+# Render / cache / lock
+# -------------------------
+.render/
