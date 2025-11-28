@@ -29,8 +29,10 @@ pnpm-debug.log*
 # -------------------------
 # Firebase Admin credentials
 # -------------------------
-serviceAccountKey.json
-firebase-adminsdk-*.json
+# Credenciales de Firebase
+
+iglu-2025-firebase-adminsdk-fbsvc-d91253ddfa.json
+
 *.pem
 *.p12
 
