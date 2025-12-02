@@ -45,7 +45,10 @@ export const addMessage = async (meetingId: string, message: Message) => {
 export const getMessages = async (meetingId: string): Promise<Message[]> => {
   const chatRef = db.collection("meetings").doc(meetingId).collection("chat");
   const snapshot = await chatRef.orderBy("timestamp").get();
-  return snapshot.docs.map(doc => doc.data() as Message);
+
+  return snapshot.docs.map((doc: FirebaseFirestore.QueryDocumentSnapshot) =>
+    doc.data() as Message
+  );
 };
 
 /**

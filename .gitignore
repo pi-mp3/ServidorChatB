@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs
+*.log
+*.log.*
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# dotenv environment variables file
+.env
+.env.local
+.env.*.local
+
+# TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# Firebase
+firebase-debug.log
+.firebaserc
+iglu-2025-firebase-adminsdk-fbsvc-d91253ddfa.json
+
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional coverage directory
+coverage/

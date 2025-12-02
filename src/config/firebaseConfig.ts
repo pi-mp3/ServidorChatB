@@ -1,22 +1,30 @@
 /**
  * firebaseConfig.ts
- * Initializes Firebase Admin SDK with service account from env
+ * Initializes Firebase Admin SDK
  */
 
 import admin from "firebase-admin";
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      // Replace escaped newlines
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\n/g, "\n")
-    }),
-    databaseURL: process.env.FIREBASE_DATABASE_URL
-  });
+const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
+
+if (!serviceAccountString) {
+  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT is missing or invalid");
 }
 
+let serviceAccount;
+
+try {
+  serviceAccount = JSON.parse(serviceAccountString);
+} catch (err) {
+  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT JSON parse failed. Check formatting.");
+}
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+// 👉 Firestore instance
 export const db = admin.firestore();
-export const auth = admin.auth();
+
+// 👉 Still export admin if needed
 export default admin;
