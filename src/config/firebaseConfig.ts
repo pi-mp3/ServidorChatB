@@ -1,6 +1,6 @@
 /**
  * firebaseConfig.ts
- * Initializes Firebase Admin SDK
+ * Initializes Firebase Admin SDK and exports Firestore instance
  * Configurado para Render.com con variables de entorno separadas
  */
 
@@ -28,4 +28,8 @@ admin.initializeApp({
 
 console.log("✅ Firebase Admin initialized successfully");
 
+// Exportamos Firestore como `db` para usar en otros servicios
+export const db = admin.firestore();
+
+// También exportamos `admin` por si necesitamos acceder a otras funciones
 export default admin;
