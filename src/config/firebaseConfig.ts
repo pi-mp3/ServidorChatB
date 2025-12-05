@@ -1,30 +1,31 @@
 /**
  * firebaseConfig.ts
  * Initializes Firebase Admin SDK
+ * Configurado para Render.com con variables de entorno separadas
  */
 
 import admin from "firebase-admin";
 
-const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
+// Tomamos las variables de entorno
+const { PROJECT_ID, CLIENT_EMAIL, PRIVATE_KEY } = process.env;
 
-if (!serviceAccountString) {
-  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT is missing or invalid");
+// Validación básica: asegúrate de que estén definidas
+if (!PROJECT_ID || !CLIENT_EMAIL || !PRIVATE_KEY) {
+  throw new Error(
+    "❌ Firebase Admin variables are missing! Make sure PROJECT_ID, CLIENT_EMAIL, and PRIVATE_KEY are set in Render Environment."
+  );
 }
 
-let serviceAccount;
-
-try {
-  serviceAccount = JSON.parse(serviceAccountString);
-} catch (err) {
-  throw new Error("❌ FIREBASE_SERVICE_ACCOUNT JSON parse failed. Check formatting.");
-}
-
+// Inicializamos Firebase Admin
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert({
+    projectId: PROJECT_ID,
+    clientEmail: CLIENT_EMAIL,
+    // Reemplazamos los '\n' literales por saltos de línea reales
+    privateKey: PRIVATE_KEY.replace(/\\n/g, "\n"),
+  }),
 });
 
-// 👉 Firestore instance
-export const db = admin.firestore();
+console.log("✅ Firebase Admin initialized successfully");
 
-// 👉 Still export admin if needed
 export default admin;
