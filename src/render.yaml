@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: iglu-backend
+    env: node
+    region: oregon
+    rootDir: .
+    plan: free
+    autoDeploy: true
+
+    buildCommand: npm install && npm run build
+    startCommand: npm start
