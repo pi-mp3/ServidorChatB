@@ -107,21 +107,17 @@ export const initSocket = (io: Server) => {
 
         socket.join(room);
 
-        // Fetch current participants in the room
+        // Fetch current participants in the room (excluding the new joiner)
         const socketsInRoom = await io.in(room).fetchSockets();
-        const participantsList = socketsInRoom.map(s => ({
-          uid: (s as any).user?.uid || 'unknown',
-          name: (s as any).userName
-        }));
+        const otherSocketIds = socketsInRoom
+          .map(s => s.id)
+          .filter(id => id !== socket.id);
 
-        // Send participant list to the new user
-        socket.emit("meeting:participants", participantsList);
+        // Send list of existing socket IDs to the new user
+        socket.emit("meeting:participants", otherSocketIds);
 
-        // Broadcast to existing participants that new user joined
-        socket.to(room).emit("userJoined", { 
-          userId: user.uid, 
-          userName: (socket as any).userName 
-        });
+        // Broadcast to existing participants that new user joined (send only socketId)
+        socket.to(room).emit("userJoined", { socketId: socket.id });
       } catch (err: any) {
         socket.emit("meeting:error", { message: "Error al unir a la reunión: " + err.message });
       }
@@ -198,6 +194,91 @@ export const initSocket = (io: Server) => {
     });
 
     /**
+     * Event: signal
+     * Handles all WebRTC signaling (offers, answers, ICE) via SimplePeer
+     * SimplePeer packages all WebRTC negotiation into a single signal event
+     * 
+     * @event signal
+     * @param {string} to - Target peer user ID
+     * @param {string} from - Sender's user ID
+     * @param {Object} data - SimplePeer signal data (offer/answer/candidate)
+     * @emits signal - Forwards signal to the specific target user
+     */
+    socket.on("signal", (to: string, from: string, data: any) => {
+      try {
+        // Extract base socket ID if it's a screen share ID (e.g., "ABC-screen" -> "ABC")
+        const baseId = to.replace('-screen', '');
+        
+        // Send signal directly to the target socket ID
+        io.to(baseId).emit("signal", to, from, data);
+      } catch (err: any) {
+        console.error("❌ Error relaying signal:", err);
+      }
+    });
+
+    /**
+     * DEPRECATED: video-offer, video-answer, ice-candidate
+     * Kept for backward compatibility but not used with SimplePeer
+     */
+    socket.on("video-offer", ({ meetingId, sdp, targetUserId }: { meetingId: string; sdp: RTCSessionDescriptionInit; targetUserId?: string }) => {
+      try {
+        const room = `meeting-${meetingId}`;
+        const payload = { userId: user.uid, sdp };
+        socket.to(room).emit("video-offer", payload);
+      } catch (err: any) {
+        console.error("❌ Error relaying video offer:", err);
+      }
+    });
+
+    socket.on("video-answer", ({ meetingId, sdp, targetUserId }: { meetingId: string; sdp: RTCSessionDescriptionInit; targetUserId?: string }) => {
+      try {
+        const room = `meeting-${meetingId}`;
+        const payload = { userId: user.uid, sdp };
+        socket.to(room).emit("video-answer", payload);
+      } catch (err: any) {
+        console.error("❌ Error relaying video answer:", err);
+      }
+    });
+
+    socket.on("ice-candidate", ({ meetingId, candidate, targetUserId }: { meetingId: string; candidate: RTCIceCandidate; targetUserId?: string }) => {
+      try {
+        const room = `meeting-${meetingId}`;
+        const payload = { userId: user.uid, candidate };
+        socket.to(room).emit("ice-candidate", payload);
+      } catch (err: any) {
+        console.error("❌ Error relaying ICE candidate:", err);
+      }
+    });
+
+    /**
+     * Event: startScreenShare
+     * Notifies other participants that user started sharing screen
+     */
+    socket.on("startScreenShare", ({ meetingId, userId }) => {
+      try {
+        const room = `meeting-${meetingId}`;
+        socket.to(room).emit("startScreenShare", { userId, socketId: socket.id });
+        console.log(`📺 User ${userId} (socket: ${socket.id}) started screen sharing in meeting ${meetingId}`);
+      } catch (err: any) {
+        console.error("❌ Error in startScreenShare:", err);
+      }
+    });
+
+    /**
+     * Event: stopScreenShare
+     * Notifies other participants that user stopped sharing screen
+     */
+    socket.on("stopScreenShare", ({ meetingId, userId }) => {
+      try {
+        const room = `meeting-${meetingId}`;
+        socket.to(room).emit("stopScreenShare", { userId, socketId: socket.id });
+        console.log(`🛑 User ${userId} (socket: ${socket.id}) stopped screen sharing in meeting ${meetingId}`);
+      } catch (err: any) {
+        console.error("❌ Error in stopScreenShare:", err);
+      }
+    });
+
+    /**
      * Event: disconnect
      * Handles socket disconnection (manual or network failure)
      * Notifies remaining participants that user left the meeting
@@ -206,7 +287,7 @@ export const initSocket = (io: Server) => {
       const meetingId = (socket as any).meetingId;
       if (meetingId) {
         const room = `meeting-${meetingId}`;
-        socket.to(room).emit("userLeft", { userId: user.uid });
+        socket.to(room).emit("userLeft", { userId: user.uid, socketId: socket.id });
       }
     });
   });
